@@ -25,6 +25,26 @@ fn_get_md5sum() {
 	md5sum "${1}" 2>/dev/null| awk '{print $1}'
 }
 
+# Load a gamedata file, and read the, all to find the hierarchy of includes. Print those with their checksums
+fn_get_import_tree() {
+	for incfile in $(sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d' "${gamedatadir}/${1}" | grep '^[ \t]*fn_import_game_settings' | awk '{print $2}'); do
+		echo "$incfile:$(md5sum "${gamedatadir}/${1}" | awk '{print $1}')"
+		fn_get_import_tree $incfile
+	done
+}
+
+# Merge files together in hierarchial order. Skips all lines that aren't key/value pairs
+fn_merge_config_files() {
+	gawk -F'=' 'NF>1{if (!a[$1]){seen[length(seen)+1]=$1;} a[$1] = $0}END{for (i=1;i<=length(seen);i++) {print a[seen[i]]}}' $@
+}
+
+# Create merged config for this instance
+fn_create_merged_config() {
+	merged_cfg="${settingsdir}/${servicename}.config"
+	fn_merge_config_files "${cfg_file_default}" "${cfg_file_common}" "${cfg_file_instance}" > "${merged_cfg}"
+	source "${merged_cfg}"
+}
+
 # If default config does not exist, create it. This should come from Git, and will be overwritten by updates.
 # Rather than try to wget it from Github or other fancy ways to get it, the simplest way to ensure it works is to simply create it here.
 fn_update_config()
@@ -66,9 +86,7 @@ fn_update_config()
 	if [ "${exists}" != "" ]; then
 		# If the line isn't the same as the parsed data line, replace it
 		if [ "${exists}" != "${data}" ]; then
-			#echo "Updating ${data} in ${cfg_file}"
 			sed -e "s%^${key}=.*\$%${data}%g" -i $cfg_file
-			#sed "/${key}=.*/${data}/" -i $cfg_file
 		fi
 	else
 		# If value does not exist, append to file
@@ -79,7 +97,7 @@ fn_update_config()
 
 # Create config file
 fn_create_config(){
-	cfg_type=${1:-default}
+	cfg_type="$(basename "${1:-default}" .cfg | sed -e 's/^_//g')"
 	cfg_force=$2
 	# Look up file and header for cfg_type
 	cfg_file="cfg_file_${cfg_type}"
@@ -122,6 +140,7 @@ fn_import_game_settings(){
 
 # Set variable in setting file
 fn_set_game_setting(){
+	if [ "${parse_gamedata}" == "0" ]; then return; fi
 	setting_set=$1
 	setting_name=$2
 	setting_value=$3
@@ -131,6 +150,7 @@ fn_set_game_setting(){
 
 # Set parameter and make sure there is a config setting tied to it
 fn_set_game_parm(){
+	if [ "${parse_gamedata}" == "0" ]; then return; fi
 	setting_set=$1
 	setting_name=$2
 	setting_value=$3
@@ -174,34 +194,36 @@ fn_fix_game_dependencies() {
 }
 
 
-# Flush old setings buffer
-fn_flush_game_settings
-
 # Get the checksum of the current settings file to compare after loading gamedata
 settings_file_md5="$(fn_get_md5sum "${settings_file}")"
 
-# Import this game's settings
-fn_import_game_settings $selfname
 
-# Compare the original MD5 hash with the settings file now that we have processed all gamedata.\
-# If there is a change or the config is missing, rebuild the default config
-if [ "${settings_file_md5}" != "$(fn_get_md5sum "${settings_file}")" ] || [ ! -e "${cfg_file_default}" ]; then
-	fn_create_config default 1
+
+gamedata_source_files="$(echo $(fn_get_import_tree "${selfname}"))"
+if [ -e "${settings_file}" ]; then
+	settings_source_files=$(grep '^gamedata_source_files=' "${settings_file}" | cut -d'"' -f2)
+	if [ "${settings_source_files}" != "${gamedata_source_files}" ]; then
+		parse_gamedata=1
+	else
+		parse_gamedata=0
+	fi
+else
+	parse_gamedata=1
 fi
 
-# Load default config
-source $cfg_file_default
+# Import this game's settings
+fn_import_game_settings $selfname
+if [ "${parse_gamedata}" == "1" ]; then
+	fn_set_game_setting settings "gamedata_source_files" "${gamedata_source_files}"
+	fn_create_config default 1
+fi
+if [ ! -f $cfg_file_common ]; then fn_create_config common; fi
+if [ ! -f $cfg_file_instance ]; then fn_create_config instance; fi
 
-# Load sitewide common settings (so that Git updates can safely overwrite _default.cfg)
-if [ ! -f $cfg_file_common ]; then fn_create_config common; else source $cfg_file_common; fi
-
-# Load instance specific settings
-if [ ! -f $cfg_file_instance ]; then fn_create_config instance; else source $cfg_file_instance; fi
+fn_create_merged_config
 
 # Import mod
 if [ "${game_mod}" != "" ]; then
 	modfile="mods/${selfname}/${game_mod}"
-	echo $modfile
-	fn_set_game_setting settings "game_mod" "${game_mod}"
 	fn_import_game_settings "${modfile}"
 fi

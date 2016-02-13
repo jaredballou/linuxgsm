@@ -10,9 +10,9 @@ if [ "${checklogs}" != "1" ]; then
 fi
 sleep 1
 # Create dir's for the script and console logs
-mkdir -v "${lgsmdir}/log"
-mkdir -v "${scriptlogdir}"
-touch "${scriptlog}"
+#mkdir -v "${lgsmdir}/log"
+#mkdir -v "${scriptlogdir}"
+#touch "${scriptlog}"
 if [ -n "${consolelogdir}" ]; then
 	mkdir -v "${consolelogdir}"
 	touch "${consolelog}"

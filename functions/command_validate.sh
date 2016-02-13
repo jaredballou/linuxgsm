@@ -9,40 +9,40 @@ local modulename="Validate"
 function_selfname="$(basename $(readlink -f "${BASH_SOURCE[0]}"))"
 
 fn_validation(){
-fn_printwarn "Validating may overwrite some customised files."
-sleep 1
-echo -en "\n"
-echo -en "https://developer.valvesoftware.com/wiki/SteamCMD#Validate"
-sleep 5
-echo -en "\n"
-fn_printdots "Checking server files"
-sleep 1
-fn_printok "Checking server files"
-fn_scriptlog "Checking server files"
-sleep 1
+	fn_printwarn "Validating may overwrite some customised files."
+	sleep 1
+	echo -en "\n"
+	echo -en "https://developer.valvesoftware.com/wiki/SteamCMD#Validate"
+	sleep 5
+	echo -en "\n"
+	fn_printdots "Checking server files"
+	sleep 1
+	fn_printok "Checking server files"
+	fn_scriptlog "Checking server files"
+	sleep 1
 
-cd "${rootdir}/steamcmd"
+	cd "${rootdir}/steamcmd"
 
-if [ $(command -v unbuffer) ]; then
-	unbuffer=unbuffer
-fi
+	if [ $(command -v unbuffer) ]; then
+		unbuffer=unbuffer
+	fi
 
-if [ "${engine}" == "goldsource" ]; then
-	${unbuffer} ./steamcmd.sh +login "${steamuser}" "${steampass}" +force_install_dir "${filesdir}" +app_set_config 90 mod ${game} +app_update "${appid}" -beta ${beta} +app_update "${appid}" -beta ${beta} validate +quit|tee -a "${scriptlog}"
-else
-	${unbuffer} ./steamcmd.sh +login "${steamuser}" "${steampass}" +force_install_dir "${filesdir}" +app_update "${appid}" -beta ${beta} validate +quit|tee -a "${scriptlog}"
-fi
+	if [ "${engine}" == "goldsource" ]; then
+		${unbuffer} ./steamcmd.sh +login "${steamuser}" "${steampass}" +force_install_dir "${filesdir}" +app_set_config 90 mod ${game} +app_update "${appid}" -beta ${beta} +app_update "${appid}" -beta ${beta} validate +quit|tee -a "${scriptlog}"
+	else
+		${unbuffer} ./steamcmd.sh +login "${steamuser}" "${steampass}" +force_install_dir "${filesdir}" +app_update "${appid}" -beta ${beta} validate +quit|tee -a "${scriptlog}"
+	fi
 
-fix.sh
-fn_scriptlog "Checking complete"
+	fix.sh
+	fn_scriptlog "Checking complete"
 }
 
 check.sh
 tmuxwc=$(tmux list-sessions 2>&1|awk '{print $1}'|grep -v failed|grep -Ec "^${servicename}:")
 if [ "${tmuxwc}" -eq 1 ]; then
-    command_stop.sh
-    fn_validation
-    command_start.sh
+	command_stop.sh
+	fn_validation
+	command_start.sh
 else
-    fn_validation
+	fn_validation
 fi

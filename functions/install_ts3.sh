@@ -5,6 +5,7 @@
 
 info_distro.sh
 # Gets the teamspeak server architecture
+echo "Installing TS3"
 if [ "${arch}" == "x86_64" ]; then
 	ts3arch="amd64"
 elif [ "${arch}" == "i386" ]||[ "${arch}" == "i686" ]; then
@@ -14,45 +15,73 @@ else
 	exit 1
 fi
 
-# Grabs all version numbers not in correct order
-wget "http://dl.4players.de/ts/releases/?C=M;O=D" -q -O -| grep -i dir | egrep -o '<a href=\".*\/\">.*\/<\/a>' | egrep -o '[0-9\.?]+'|uniq > .ts3_version_numbers_unsorted.tmp
 
-# removes digits to allow sorting of numbers
-cat .ts3_version_numbers_unsorted.tmp |tr -cd '[:digit:][*\n]' > .ts3_version_numbers_digit.tmp
-# Sorts numbers in to correct order
-# merges two files in to one with two columns sorts the numbers in to order then only outputs the second to the ts3_version_numbers.tmp
-paste .ts3_version_numbers_digit.tmp .ts3_version_numbers_unsorted.tmp |sort -rn|awk '{ print $2 }' > .ts3_version_numbers.tmp
-
-# Finds directory with most recent server version.
-while read ts3_version_number; do
-	wget --spider -q "http://dl.4players.de/ts/releases/${ts3_version_number}/teamspeak3-server_linux-${ts3arch}-${ts3_version_number}.tar.gz"
-	if [ $? -eq 0 ]; then
-		availablebuild="${ts3_version_number}"
-		echo "Latest Build: ${availablebuild}"
-		# Break while-loop, if the latest release could be found
-		echo "http://dl.4players.de/ts/releases/${ts3_version_number}/teamspeak3-66server_linux-${ts3arch}-${ts3_version_number}.tar.g"
-		break
+fn_download_file() {
+	urls="${1}"
+	defname="${lgsmdir}/$(basename "${urls}")"
+	filename="${2:-$defname}"
+	checksum="${3}"
+	method="${4:-md5sum}"
+	filedir="$(dirname "${filename}")"
+	if [ ! -e "${filedir}" ]; then
+		mkdir -p "${filedir}"
 	fi
-done < .ts3_version_numbers.tmp
-rm -f .ts3_version_numbers_digit.tmp
-rm -f .ts3_version_numbers_unsorted.tmp
-rm -f .ts3_version_numbers.tmp
+	# Add a string at the end so the loop runs one last time to check for the file.
+	for url in $urls FAIL; do
+		if [ "${checksum}" != "" ] && [ "$(${method} ${filename} 2>/dev/null | awk '{print $1}')" == "${checksum}" ]; then
+			echo "${filename} OK (${method} ${checksum})"
+			return 0
+		fi
+		if [ "${checksum}" == "" ] && [ -e "${filename}" ]; then
+			echo "${filename} OK"
+			return 0
+		fi
+		if [ "${url}" == "FAIL" ]; then
+			echo "FAIL"
+			return 1
+		fi
+		echo "Trying ${url}..."
+		wget -N "${url}" -O "${filename}"
+	done
+}
 
-# Checks availablebuild info is available
-if [ -z "${availablebuild}" ]; then
-	fn_printfail "Checking for update: teamspeak.com"
-	sleep 1
-	fn_printfail "Checking for update: teamspeak.com: Not returning version info"
+# Get available download URLs
+ts3_download_url="https://www.teamspeak.com/downloads"
+unset latest_sha1
+
+for item in $(wget "${ts3_download_url}" -q -O -|egrep -oi "([^\"]*teamspeak3-server_linux_${ts3arch}[^\"]*|SHA1: [a-zA-Z0-9]*)" | sed -e 's/SHA1: //g' | grep -B1 "${ts3arch}"); do
+	if [ -z "${latest_sha1}" ]; then
+		latest_sha1="${item}"
+	else
+		if [ -z "${latest_file}" ]; then
+			latest_file="$(echo $item | sed -e 's/^.*\///g')"
+			latest_version="$(echo $item | sed -e 's/^.*\-//g' -e 's/.tar.*$//g')"
+		fi
+		server_download_urls="$(echo "${server_download_urls} ${item}")"
+	fi
+done
+
+# Checks latest_version info is available
+if [ -z "${latest_version}" ]; then
+	fn_printfail "teamspeak.com: Not returning version info"
 	sleep 2
 	exit 1
 fi
 
-cd "${lgsmdir}"
-echo -e "downloading teamspeak3-server_linux-${ts3arch}-${availablebuild}.tar.gz...\c"
-wget -N /dev/null http://dl.4players.de/ts/releases/${ts3_version_number}/teamspeak3-server_linux-${ts3arch}-${ts3_version_number}.tar.gz 2>&1 | grep -F HTTP | cut -c45-| uniq
-sleep 1
-echo -e "extracting teamspeak3-server_linux-${ts3arch}-${availablebuild}.tar.gz...\c"
-tar -xf "teamspeak3-server_linux-${ts3arch}-${availablebuild}.tar.gz" 2> ".${servicename}-tar-error.tmp"
+installer_path="${lgsmdir}/${latest_file}"
+fn_download_file "${server_download_urls}" "${installer_path}" "${latest_sha1}" "sha1sum"
+local status=$?
+if [ ${status} -eq 0 ]; then
+	echo "File successfully fetched"
+else
+	echo "FAIL - Exit status ${status}"
+	sleep 1
+	exit $?
+fi
+
+echo -e "extracting ${latest_file}...\c"
+tar -xf "${latest_file}" -C "${filesdir}" --strip 1 2> ".${servicename}-tar-error.tmp"
+
 local status=$?
 if [ ${status} -eq 0 ]; then
 	echo "OK"
@@ -63,8 +92,12 @@ else
 	rm ".${servicename}-tar-error.tmp"
 	exit $?
 fi
+
+return
+
 echo -e "copying to ${filesdir}...\c"
 cp -R "${lgsmdir}/teamspeak3-server_linux-${ts3arch}/"* "${filesdir}" 2> ".${servicename}-cp-error.tmp"
+
 local status=$?
 if [ ${status} -eq 0 ]; then
 	echo "OK"
@@ -75,5 +108,6 @@ else
 	rm ".${servicename}-cp-error.tmp"
 	exit $?
 fi
-rm -f teamspeak3-server_linux-${ts3arch}-${availablebuild}.tar.gz
+
+rm -f teamspeak3-server_linux-${ts3arch}-${latest_version}.tar.gz
 rm -rf "${lgsmdir}/teamspeak3-server_linux-${ts3arch}"
