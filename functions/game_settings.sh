@@ -18,7 +18,7 @@ cfg_header_common="# Common config - Will not be overwritten by script.\n${cfg_h
 cfg_header_instance="# Instance Config for ${servicename} - Will not be overwritten by script.\n${cfg_header_all}"
 
 # Settings file created from gamedata
-settings_file="${settingsdir}/settings"
+settings_file="${parserdir}/settings"
 
 # Get the MD5 hash of a file
 fn_get_md5sum() {
@@ -40,7 +40,7 @@ fn_merge_config_files() {
 
 # Create merged config for this instance
 fn_create_merged_config() {
-	merged_cfg="${settingsdir}/${servicename}.config"
+	merged_cfg="${parserdir}/${servicename}.config"
 	fn_merge_config_files "${cfg_file_default}" "${cfg_file_common}" "${cfg_file_instance}" > "${merged_cfg}"
 	source "${merged_cfg}"
 }
@@ -113,17 +113,17 @@ fn_create_config(){
 		echo -ne "${!cfg_header}\n\n" > ${!cfg_file}
 		# Dump in defaults for this game
 		if [ "${cfg_type}" == "default" ]; then
-			cat ${settingsdir}/settings >> ${!cfg_file}
+			cat ${parserdir}/settings >> ${!cfg_file}
 		fi
 	fi
 }
 
 # Delete all output files from the settings parser
 fn_flush_game_settings(){
-	if [ -e $settingsdir ]; then
-		rm -rf $settingsdir > /dev/null
+	if [ -e $parserdir ]; then
+		rm -rf $parserdir > /dev/null
 	fi
-	mkdir -p $settingsdir
+	mkdir -p $parserdir
 }
 
 # Pull in another gamedata file
@@ -145,7 +145,7 @@ fn_set_game_setting(){
 	setting_name=$2
 	setting_value=$3
 	setting_comment=$4
-	fn_update_config "${setting_name}" "${setting_value}" "${settingsdir}/${setting_set}" "${setting_comment}"
+	fn_update_config "${setting_name}" "${setting_value}" "${parserdir}/${setting_set}" "${setting_comment}"
 }
 
 # Set parameter and make sure there is a config setting tied to it
@@ -155,8 +155,8 @@ fn_set_game_parm(){
 	setting_name=$2
 	setting_value=$3
 	setting_comment=$4
-	fn_update_config "${setting_name}" "${setting_value}" "${settingsdir}/settings" "${setting_comment}"
-	fn_update_config "${setting_name}" "\${${setting_name}}" "${settingsdir}/${setting_set}" ""
+	fn_update_config "${setting_name}" "${setting_value}" "${parserdir}/settings" "${setting_comment}"
+	fn_update_config "${setting_name}" "\${${setting_name}}" "${parserdir}/${setting_set}" ""
 }
 
 # Get value from settings file
@@ -168,7 +168,7 @@ fn_get_game_setting(){
 
 # Fix dependency files for game
 fn_fix_game_dependencies() {
-	depfile="${settingsdir}/dependencies"
+	depfile="${parserdir}/dependencies"
 	# If no dependency list, skip out
 	if [ ! -e "${depfile}" ]; then
 		return

@@ -11,7 +11,7 @@ The gamedata files themselves use a few simple functions to do their magic.
 ## Functions
 
 ### fn\_flush\_game\_settings()
-This function clears out all the collector files in $settingsdir (default is $\{lgsmdir\}/settings.tmp). It is run at every execution of the script right now, eventually the goal is to only regenerate these files when gamedata updates are pulled.
+This function clears out all the collector files in \$parserdir (default is $\{lgsmdir\}/settings.tmp). It is run at every execution of the script right now, eventually the goal is to only regenerate these files when gamedata updates are pulled.
 
 ### fn\_import\_game\_settings()
 

@@ -20,8 +20,8 @@ fn_process_parmlist(){
 
 # This is the way we create a script that collates and parses the parameters
 fn_parms(){
-	if [ -e "${settingsdir}/parms" ]; then
-		parms_list="$(fn_process_parmlist "" ${settingsdir}/parms)"
+	if [ -e "${parserdir}/parms" ]; then
+		parms_list="$(fn_process_parmlist "" ${parserdir}/parms)"
 	fi
 	parms="$(eval "echo \"${parms_list} ${server_parms}\"")"
 }

@@ -34,9 +34,9 @@ fn_set_game_parm parms_plus "exec" "\${servercfg}" "Server config file"
 
 # This is the way we create a script that collates and parses the parameters
 fn_parms(){
-        parms_set="$(fn_process_parmlist "\+set " ${settingsdir}/parms_set)"
-        parms_minus="$(fn_process_parmlist "\-" ${settingsdir}/parms_minus)"
-        parms_plus="$(fn_process_parmlist "\+" ${settingsdir}/parms_plus)"
+        parms_set="$(fn_process_parmlist "\+set " ${parserdir}/parms_set)"
+        parms_minus="$(fn_process_parmlist "\-" ${parserdir}/parms_minus)"
+        parms_plus="$(fn_process_parmlist "\+" ${parserdir}/parms_plus)"
         parms="$(eval "echo \"${parms_minus} ${server_parms} ${parms_set} ${parms_plus}\"")"
 }
 

@@ -21,8 +21,8 @@ fn_getopt_generic(){
 		if [ -z $optlen ] || [ ${#opt} -gt $optlen ]; then
 			optlen=${#opt}
 		fi
-		USAGE+=("\e[34m${opt}|\e[0m${field[2]}")
-	done < <(sed -e 's/"//g' -e 's/=/ /g' "${settingsdir}/scriptactions")
+		USAGE+=("\e[32m${opt}|\e[0m${field[2]}")
+	done < <(sed -e 's/"//g' -e 's/=/ /g' "${parserdir}/scriptactions")
 	if [ "${runcmd}" != "" ]; then
 		eval "${runcmd}"
 		exit
