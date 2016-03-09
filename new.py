@@ -30,7 +30,7 @@ def dict_merge(dct, merge_dct):
 
 def load_gamedata_file(file):
     bn = os.path.basename(file).split('.')[0]
-    conf = hiyapyco.load("gamedata/" + file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True)
+    conf = hiyapyco.load("gamedata/" + file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False)
     data = OrderedDict()
     if (len(conf.keys()) == 1) and (conf.keys()[0] == bn):
         conf = conf[conf.keys()[0]]
@@ -92,11 +92,10 @@ config = {
     "cachedir": "%(lgsmdir)s/tmp",
 }
 
-#conf["config"]["servicename"] = u"insserver"
-#dict_merge(conf["config"],config)
-#dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True))
-#for key in conf["config"].keys():
-#    print "%s: %s" % (key,getval(conf,key))
+dict_merge(conf["config"],config)
+dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False))
+for key in conf["config"].keys():
+    print "%s: %s" % (key,getval(conf,key))
 
 
 
