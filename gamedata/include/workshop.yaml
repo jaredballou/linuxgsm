@@ -16,7 +16,7 @@ workshop:
       desc: "Workshop Enabled"
       value: 0
     "+sv_workshop_list_file":
-      value: "%(systemdir)/subscribed_file_ids.txt"
+      value: "%(systemdir)s/subscribed_file_ids.txt"
       desc: "Path to Subscribed Workshop Items file"
     "-workshop":
       value: false

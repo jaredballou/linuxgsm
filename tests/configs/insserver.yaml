@@ -1,0 +1,8 @@
+---
+# Instance Config for insserver - Will not be overwritten by script.
+# Your settings for all servers go in _common.cfg
+# Server-specific settings go into $SERVER.cfg
+
+game_mod: "dayofinfamy"
+mapcyclefile: "mapcycle_doi.txt"
+map: "doi_bastogne conquer"

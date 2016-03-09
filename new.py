@@ -4,6 +4,7 @@ import sys, os
 import yaml
 import json
 from pprint import pprint as pp
+import datetime
 try:
     from collections import OrderedDict
 except ImportError:
@@ -29,7 +30,7 @@ def dict_merge(dct, merge_dct):
 
 def load_gamedata_file(file):
     bn = os.path.basename(file).split('.')[0]
-    conf = hiyapyco.load(file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True)
+    conf = hiyapyco.load("gamedata/" + file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True)
     data = OrderedDict()
     if (len(conf.keys()) == 1) and (conf.keys()[0] == bn):
         conf = conf[conf.keys()[0]]
@@ -56,17 +57,54 @@ def getval(dict,key):
         return
     if not key in dict["config"].keys():
         return
-    interp = dict["config"][key] % dict["config"]
+#    pp(key)
+#    pp(dict["config"][key])
+    try:
+        interp = dict["config"][key] % dict["config"]
+    except:
+        interp = dict["config"][key]
     return interp
+
+
+
 
 conf = load_gamedata_file('games/insserver.yaml')
 
+today = datetime.datetime.today()
+config = {
+    "date": today.strftime("%d-%m-%Y-%H-%M-%S"),
+    "version": "090316",
+    "core_script": "new.py",
+    "scriptpath": os.path.realpath(__file__),
+    "selfname": os.path.basename(os.path.realpath(__file__)),
+    "servicename": os.path.basename(__file__),
+    "rootdir": os.path.dirname(os.path.realpath(__file__)),
+    "githubuser": "jaredballou",
+    "githubrepo": "linuxgsm",
+    "githubbranch": "python",
+    "git_update": False,
+    "lgsmdir": "%(rootdir)s/lgsm",
+    "lgsmserverdir": "%(lgsmdir)s/servers/%(selfname)s",
+    "logdir": "%(lgsmdir)s/servers/%(selfname)s/log",
+    "parserdir": "%(lgsmserverdir)s/tmp",
+    "gamedatadir": "%(lgsmdir)s/gamedata",
+    "scriptcfgdir": "%(lgsmserverdir)s/cfg",
+    "cachedir": "%(lgsmdir)s/tmp",
+}
+
 #conf["config"]["servicename"] = u"insserver"
-#pp(conf["config"])
-#conf = hiyapyco.load(, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True)
+#dict_merge(conf["config"],config)
+#dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=True))
+#for key in conf["config"].keys():
+#    print "%s: %s" % (key,getval(conf,key))
+
+
+
+
+
 #print json.dumps(conf, indent=4,sort_keys=True)
-#print getval(conf,"lockselfname")
 #print yaml.dump(
-pp(json.loads(json.dumps(conf)))
-#conf["config"], default_flow_style=True)
+#pp(json.loads(json.dumps(conf)))
+#pp(conf["config"])
+#, default_flow_style=True)
 #, Dumper=yaml.order.OrderedDumper, default_flow_style=False)

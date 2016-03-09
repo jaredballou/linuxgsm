@@ -1,0 +1,6 @@
+---
+# Common config - Will not be overwritten by script.
+# Your settings for all servers go in _common.cfg
+# Server-specific settings go into $SERVER.cfg
+
+ip: 74.91.112.127

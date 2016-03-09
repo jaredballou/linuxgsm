@@ -1,0 +1,51 @@
+---
+# Default config - Changes will be overwritten by updates.
+# Your settings for all servers go in _common.cfg
+# Server-specific settings go into $SERVER.cfg
+
+backupdir: "%(lgsmdir)s/backups" # Backup Directory
+map: "ministry checkpoint" # Default map to load
+game_mod: "" # Mod to load from gamedata/mods
+email: "email@example.com" # Email address for notification
+emaillog: "%(scriptlogdir)s/%(servicename)s-email.log" # Email Log
+emailnotification: "off" # Email notification (on|off)
+engine: "source" # Game Engine
+filesdir: "%(rootdir)s/serverfiles" # Server Files Directory
+game: "insurgency" # Game Name
+gamename: "Insurgency" # Name for subdirectory in GitHub repo
+ip: "0.0.0.0" # IP Address to bind for server
+lgsm_version: "300116" # Version of LGSM that created this config
+lockselfname: ".%(servicename)s.lock" # LGSM Lock File
+logdays: "7" # Number of days to retain logs
+maxplayers: "64" # Max Players
+port: "27015" # Server port
+consolelogdir: "%(lgsmserverdir)s/log/console" # Console Log Dir
+consolelog: "%(consolelogdir)s/%(servicename)s-console.log" # Console Log
+consolelogdate: "%(consolelogdir)s/%(servicename)s-console-%(date)s.log" # Console Log Rotation Filename
+scriptlogdir: "%(lgsmserverdir)s/log/script" # Script Log Dir
+scriptlog: "%(scriptlogdir)s/%(servicename)s-script.log" # Script Log
+scriptlogdate: "%(scriptlogdir)s/%(servicename)s-script-%(date)s.log" # Script Log Rotation Filename
+servercfg_suffix: ".cfg" # Suffix to put on the end of the server config. For file extensions, use ".ext", setting to empty will use the bare server config name.
+systemdir: "%(filesdir)s/%(game)s" # System Directory (root of game installation)
+gamelogdir: "%(systemdir)s/logs" # Game log directory
+executabledir: "%(filesdir)s" # Executable directory
+executable: "./srcds_linux" # Executable to invoke to start game server
+servercfgdir: "%(systemdir)s/cfg" # Server config directory
+servercfg: "%(servicename)s%(servercfg_suffix)s" # Server config file for this instance
+servercfgdefault: "%(servercfgdir)s/lgsm-default%(servercfg_suffix)s" # Default server configuration file
+servercfgfullpath: "%(servercfgdir)s/%(servercfg)s" # Full path to server config
+dependency_path: "%(filesdir)s/bin" # dependency_path: "%(filesdir)s"
+server_parms: "" # Additional Server command-line arguments. Put the parameters that start with "-" first, then "+" parameters after
+appid: "237410" # Steam App ID
+steampass: "" # Steam Password
+steamuser: "anonymous" # Steam Username
+updateonstart: "off" # Update game on start
+beta: "" # Beta branch to use. Leave empty for stable branch
+tickrate: "66" # Server Tick Rate
+strictportbind: " " # Strict Port Binding
+clientport: "27005" # Client Port
+servercfgfile: "%(servercfg)s" # Server Config File
+tv_port: "27020" # SourceTV Port
+sv_playlist: "custom" # Server Playlist
+mapcyclefile: "mapcycle_cooperative.txt"
+sv_workshop_enabled: "" # Comma-delimited list of workshop items to subscribe to

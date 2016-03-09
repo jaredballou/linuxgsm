@@ -2,4 +2,4 @@
 mapcyclefile:
   settings:
     "mapcyclefile":
-      value: "--UNSET--"
+      desc: "Map cycle file"

@@ -4,10 +4,10 @@ halflife_shared:
     - include/steam
   settings:
     "dependency_path":
-      value: "%(filesdir)/bin"
+      value: "%(filesdir)s/bin"
   parms:
     "-game":
-      value: "%(game)"
+      value: "%(game)s"
     "-strictportbind":
       value: true
       format: noarg
@@ -18,6 +18,5 @@ halflife_shared:
     "+clientport":
       value: "27005"
     "+servercfgfile":
-      value: "%(servercfg)"
+      value: "%(servercfg)s"
     "+map":
-      value: "dm_lockdown"
