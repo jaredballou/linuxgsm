@@ -1,0 +1,18 @@
+---
+source:
+  import:
+    - engines/halflife_shared
+  settings:
+    "engine":
+      value: "source"
+    "executable":
+      value: "./srcds_run"
+  scriptactions:
+    sourcemod:
+      command: "install_sourcemod.sh"
+      desc: "Install SourceMod"
+      aliases:
+        - sm
+  parms:
+    "+tv_port":
+      value: "27020"

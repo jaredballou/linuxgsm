@@ -1,4 +1,0 @@
-# Game Settings File
-
-# Map Cycle File
-fn_set_game_setting settings "mapcyclefile" "--UNSET--" "Map Cycle File"

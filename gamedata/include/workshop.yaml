@@ -1,0 +1,24 @@
+---
+workshop:
+  settings:
+    subscribed_file_ids:
+      desc: "Subscribed Workshop Items"
+    subscribed_collection_ids:
+      desc: "Subscribed Workshop Collections"
+  parms:
+    "-authkey":
+      desc: "Optional key for Workshop Content.  See https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators - To get an authkey visit - http://steamcommunity.com/dev/apikey"
+    "+host_workshop_collection":
+      desc: "Workshop Collection ID"
+    "+workshop_start_map":
+      desc: "Workshop Start Map"
+    "+sv_workshop_enabled":
+      desc: "Workshop Enabled"
+      value: 0
+    "+sv_workshop_list_file":
+      value: "%(systemdir)/subscribed_file_ids.txt"
+      desc: "Path to Subscribed Workshop Items file"
+    "-workshop":
+      value: false
+      format: noarg
+      desc: "Enable Workshop Support"

@@ -1,0 +1,5 @@
+---
+tickrate:
+  parms:
+    "tickrate":
+      value: 66

@@ -1,0 +1,23 @@
+---
+halflife_shared:
+  import:
+    - include/steam
+  settings:
+    "dependency_path":
+      value: "%(filesdir)/bin"
+  parms:
+    "-game":
+      value: "%(game)"
+    "-strictportbind":
+      value: true
+      format: noarg
+    "-port":
+      value: "27015"
+    "-maxplayers":
+      value: "64"
+    "+clientport":
+      value: "27005"
+    "+servercfgfile":
+      value: "%(servercfg)"
+    "+map":
+      value: "dm_lockdown"
