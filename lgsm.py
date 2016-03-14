@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#import hiyapyco
 import sys, os
 import yaml
 import os.path
@@ -12,6 +11,7 @@ except ImportError:
     # try importing the backported replacement
     # requires a: `pip-2.6 install ordereddict`
     from ordereddict import OrderedDict
+
 
 def dict_merge(dct, merge_dct):
     """ Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
@@ -57,55 +57,52 @@ def load_gamedata_file(file):
     return data
 
 def getval(dict,key):
-    if not "settings" in dict.keys():
+    if not "config" in dict.keys():
         return
     if not key in dict["config"].keys():
         return
-#    pp(key)
-#    pp(dict["config"][key])
+    str = dict['config'][key]
     try:
-        interp = dict["config"][key] % dict["config"]
+        while (str.find('%') != -1):
+            str = (str) % dict['config']
     except:
-        interp = dict["config"][key]
-    return interp
+        return str
+    return str
 
 
-
-
-conf = load_gamedata_file('games/insserver.yaml')
-
-today = datetime.datetime.today()
+# Default configuration, needs to be baked in so we can bootstrap
 config = {
-    "date": today.strftime("%d-%m-%Y-%H-%M-%S"),
-    "version": "090316",
-    "core_script": "new.py",
-    "scriptpath": os.path.realpath(__file__),
-    "selfname": os.path.basename(os.path.realpath(__file__)),
-    "servicename": os.path.basename(__file__),
-    "rootdir": os.path.dirname(os.path.realpath(__file__)),
-    "githubuser": "jaredballou",
-    "githubrepo": "linuxgsm",
-    "githubbranch": "python",
+    "cachedir": "%(lgsmdir)s/tmp",
+    "core_script": "lgsm.py",
+    "date": datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S"),
+    "gamedatadir": "%(lgsmdir)s/gamedata",
     "git_update": False,
+    "githubbranch": "python",
+    "githubrepo": "linuxgsm",
+    "githubuser": "jaredballou",
     "lgsmdir": "%(rootdir)s/lgsm",
     "lgsmserverdir": "%(lgsmdir)s/servers/%(selfname)s",
     "logdir": "%(lgsmdir)s/servers/%(selfname)s/log",
     "parserdir": "%(lgsmserverdir)s/tmp",
-    "gamedatadir": "%(lgsmdir)s/gamedata",
+    "rootdir": os.path.dirname(os.path.realpath(__file__)),
     "scriptcfgdir": "%(lgsmserverdir)s/cfg",
-    "cachedir": "%(lgsmdir)s/tmp",
+    "scriptpath": os.path.realpath(__file__),
+    "selfname": os.path.basename(os.path.realpath(__file__)),
+    "servicename": os.path.basename(__file__),
+    "version": "090316",
 }
 
+conf = load_gamedata_file('games/%s.yaml' % config["servicename"])
 
 dict_merge(conf["config"],config)
 #dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False))
-#for key in conf["config"].keys():
-#    print "%s: %s" % (key,getval(conf,key))
 
 
 
 
 print json.dumps(conf, indent=4,sort_keys=True)
+for key in conf["config"].keys():
+    print "%s: %s" % (key,getval(conf,key))
 #print yaml.dump(
 #pp(json.loads(json.dumps(conf)))
 #pp(conf["config"])

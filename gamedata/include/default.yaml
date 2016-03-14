@@ -46,7 +46,7 @@ default:
       default: "%(consolelogdir)s/%(servicename)s-console.log"
       desc: "Console Log"
     "consolelogdate":
-      default: "%(consolelogdir)s/%(servicename)s-console-`date '+%d-%m-%Y-%H-%M-%S'`.log"
+      default: "%(consolelogdir)s/%(servicename)s-console-%(date)s.log"
       desc: "Console Log Rotation Filename"
     "scriptlogdir":
       default: "%(lgsmserverdir)s/log/script"
@@ -55,7 +55,7 @@ default:
       default: "%(scriptlogdir)s/%(servicename)s-script.log"
       desc: "Script Log"
     "scriptlogdate":
-      default: "%(scriptlogdir)s/%(servicename)s-script-`date '+%d-%m-%Y-%H-%M-%S'`.log"
+      default: "%(scriptlogdir)s/%(servicename)s-script-%(date)s.log"
       desc: "Script Log Rotation Filename"
     "emaillog":
       default: "%(scriptlogdir)s/%(servicename)s-email.log"
