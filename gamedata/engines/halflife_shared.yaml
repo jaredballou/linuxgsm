@@ -4,19 +4,26 @@ halflife_shared:
     - include/steam
   settings:
     "dependency_path":
-      value: "%(filesdir)s/bin"
-  parms:
-    "-game":
-      value: "%(game)s"
-    "-strictportbind":
-      value: true
+      default: "%(filesdir)s/bin"
+    "game":
+      parm: "-game"
+      default: "%(game)s"
+    "strictportbind":
+      parm: "-strictportbind"
+      default: true
       format: noarg
-    "-port":
-      value: "27015"
-    "-maxplayers":
-      value: "64"
-    "+clientport":
-      value: "27005"
-    "+servercfgfile":
-      value: "%(servercfg)s"
-    "+map":
+    "port":
+      parm: "-port"
+      default: "27015"
+    "maxplayers":
+      parm: "-maxplayers"
+      default: "64"
+    "clientport":
+      parm: "+clientport"
+      default: "27005"
+    "servercfgfile":
+      parm: "+servercfgfile"
+      default: "%(servercfg)s"
+    "map":
+      parm: "+map"
+      default:

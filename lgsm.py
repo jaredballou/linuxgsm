@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-import hiyapyco
+#import hiyapyco
 import sys, os
 import yaml
+import os.path
 import json
 from pprint import pprint as pp
 import datetime
@@ -30,7 +31,10 @@ def dict_merge(dct, merge_dct):
 
 def load_gamedata_file(file):
     bn = os.path.basename(file).split('.')[0]
-    conf = hiyapyco.load("gamedata/" + file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False)
+    #conf = hiyapyco.load("gamedata/" + file, method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False)
+    with open("gamedata/" + file, 'r') as ymlfile:
+        conf = yaml.load(ymlfile)
+    #pp(conf)
     data = OrderedDict()
     if (len(conf.keys()) == 1) and (conf.keys()[0] == bn):
         conf = conf[conf.keys()[0]]
@@ -46,8 +50,8 @@ def load_gamedata_file(file):
     # this is me doing something stupid so I can interpolate the config
     if ("settings" in data.keys()):
         for setting in data["settings"].keys():
-            if "value" in data["settings"][setting].keys():
-                data["config"][setting] = data["settings"][setting]["value"]
+            if "default" in data["settings"][setting].keys():
+                data["config"][setting] = data["settings"][setting]["default"]
             else:
                 data["config"][setting] = ""
     return data
@@ -92,16 +96,16 @@ config = {
     "cachedir": "%(lgsmdir)s/tmp",
 }
 
+
 dict_merge(conf["config"],config)
-dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False))
-for key in conf["config"].keys():
-    print "%s: %s" % (key,getval(conf,key))
+#dict_merge(conf["config"],hiyapyco.load("tests/configs/_default.yaml", "tests/configs/_common.yaml", "tests/configs/" + conf["config"]["servicename"] + ".yaml", method=hiyapyco.METHOD_MERGE, interpolate=True, failonmissingfiles=False))
+#for key in conf["config"].keys():
+#    print "%s: %s" % (key,getval(conf,key))
 
 
 
 
-
-#print json.dumps(conf, indent=4,sort_keys=True)
+print json.dumps(conf, indent=4,sort_keys=True)
 #print yaml.dump(
 #pp(json.loads(json.dumps(conf)))
 #pp(conf["config"])

@@ -8,11 +8,15 @@ steam:
     "steampass":
       desc: "Steam Password"
     "steamuser":
-      value: "anonymous"
+      default: "anonymous"
       desc: "Steam Username"
     "updateonstart":
-      value: "off"
+      default: "off"
       desc: "Update game on start"
+    "beta":
+      parm: "-beta"
+      default: 
+      desc: "Beta branch to use. Leave empty for stable branch"
   scriptactions:
     force-update:
       command: "set forceupdate=1; update_check.sh"
@@ -30,6 +34,3 @@ steam:
       desc: "Console allows you to access the live view of a server"
       aliases:
         - c
-  parms:
-    "-beta":
-      desc: "Beta branch to use. Leave empty for stable branch"

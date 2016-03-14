@@ -4,15 +4,15 @@ source:
     - engines/halflife_shared
   settings:
     "engine":
-      value: "source"
+      default: "source"
     "executable":
-      value: "./srcds_run"
+      default: "./srcds_run"
+    "tv_port":
+      parm: "+tv_port"
+      default: "27020"
   scriptactions:
     sourcemod:
       command: "install_sourcemod.sh"
       desc: "Install SourceMod"
       aliases:
         - sm
-  parms:
-    "+tv_port":
-      value: "27020"

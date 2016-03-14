@@ -7,27 +7,28 @@ insserver:
   gamename: "Insurgency Dedicated Server"
   dependencies:
     "libc.so.6":
-      value: "c856f3fcac0a944a36e723b06bdbeb7e"
+      checksum: "c856f3fcac0a944a36e723b06bdbeb7e"
     "libm.so.6":
-      value: "b6fef88fd045bfcd05fd4036f323855c"
+      checksum: "b6fef88fd045bfcd05fd4036f323855c"
     "libpthread.so.0":
-      value: "50a2a33d3cdd82f15c3de6539db7bf60"
+      checksum: "50a2a33d3cdd82f15c3de6539db7bf60"
     "librt.so.1":
-      value: "eabf0fc1f81292270343bd0796fc64ca"
+      checksum: "eabf0fc1f81292270343bd0796fc64ca"
   settings:
     "executable":
-      value: "./srcds_linux"
+      default: "./srcds_linux"
     "appid":
-      value: "237410"
+      default: "237410"
     "map":
-      value: "ministry checkpoint"
+      default: "ministry checkpoint"
     "game":
-      value: "insurgency"
+      default: "insurgency"
     "gamename":
-      value: "Insurgency"
-  parms:
-    "+sv_playlist":
-      value: "custom"
+      default: "Insurgency"
+    "sv_playlist":
+      parm: "+sv_playlist"
+      default: "custom"
       desc: "Server Playlist"
-    "+mapcyclefile":
-      value: "mapcycle_cooperative.txt"
+    "mapcyclefile":
+      parm: "+mapcyclefile"
+      default: "mapcycle_cooperative.txt"

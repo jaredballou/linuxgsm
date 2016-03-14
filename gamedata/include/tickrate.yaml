@@ -1,5 +1,6 @@
 ---
 tickrate:
-  parms:
+  settings:
     "tickrate":
-      value: 66
+      parm: "tickrate"
+      default: 66

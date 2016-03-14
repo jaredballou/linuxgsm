@@ -5,25 +5,25 @@ avalanche:
     - include/tickrate
   dependencies:
     "libstdc++.so.6":
-      value: "4f9c911de2276f988afaf47659a8367f"
+      checksum: "4f9c911de2276f988afaf47659a8367f"
   settings:
     "engine":
-      value: "avalanche"
+      default: "avalanche"
     "servercfg":
-      value: "config.lua"
+      default: "config.lua"
       desc: "Server Config file"
     "systemdir":
-      value: "\${filesdir}"
+      default: "\${filesdir}"
     "executabledir":
-      value: "\${filesdir}"
+      default: "\${filesdir}"
     "executable":
-      value: "./Jcmp-Server"
+      default: "./Jcmp-Server"
     "servercfg":
-      value: "config.lua"
+      default: "config.lua"
     "servercfgdir":
-      value: "\${filesdir}"
+      default: "\${filesdir}"
     "servercfgfullpath":
-      value: "\${servercfgdir}/\${servercfg}"
+      default: "\${servercfgdir}/\${servercfg}"
     "servercfgdefault":
-      value: "\${servercfgdir}/default_config.lua"
+      default: "\${servercfgdir}/default_config.lua"
 
